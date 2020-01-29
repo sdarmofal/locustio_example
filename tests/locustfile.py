@@ -1,24 +1,20 @@
-from locust import HttpLocust, between, TaskSet
+from random import randint
 
-
-def get_companies(locustio):
-    locustio.client.get('/companies')
-
-
-def get_company(locustio):
-    locustio.client.get('/companies/3')
+from locust import HttpLocust, between, TaskSet, task
+from locust.contrib.fasthttp import FastHttpLocust
 
 
 class CompaniesBehavior(TaskSet):
-    tasks = {get_companies: 2, get_company: 1}
 
-    def on_start(self):
-        get_companies(self)
+    @task(3)
+    def get_companies(locustio):
+        locustio.client.get('/companies')
 
-    def on_stop(self):
-        get_company(self)
+    @task(1)
+    def get_company(locustio):
+        locustio.client.get(f"/companies/{randint(1,100)}", name="/companies/[id]")
 
 
-class TestCompanies(HttpLocust):
+class TestCompanies(FastHttpLocust):
     task_set = CompaniesBehavior
     wait_time = between(0.0, 1.0)

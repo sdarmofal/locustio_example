@@ -8,6 +8,11 @@ verify_ssl = true
 [packages]
 falcon = "*"
 locustio = "*"
+gunicorn = "*"
+faker = "*"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
